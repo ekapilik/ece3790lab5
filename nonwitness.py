@@ -16,7 +16,7 @@ Created on Wed Mar 20 12:47:31 2019
         ryan learnded github
         hello
 """
-import sys, rsa, random as rand, time
+import random as rand, time
 
 ###############################################################################
 """
@@ -68,8 +68,7 @@ def non_witness_test(x, s):
        # print("%d is purely composite" % x)
        return False
     else: #only considered non-witness if there are also witnesses...
-        print("Count %d" % test)
-        print("%d is composite" % x)
+        print("[%d] is composite and tricked the Miller-Rabin test" % x)
         print("\tWitnesses: %d" % w)
         print("\tNon-witnesses: %d" % nw)
         return True
@@ -77,27 +76,32 @@ def non_witness_test(x, s):
 def driver(nbits, certainty):
     done = False
     test_count = 1 #test counter
-    start = time.time() #track duration
+    start = time.time() #record start time
     
     while(not done):
-        test = abs(rand.getrandbits(nbits))
-        done = non_witness_test(test, certainty)
-        if(test_count % 100000 == 0):
+        test = abs(rand.getrandbits(nbits)) #generate random positive integer
+        done = non_witness_test(test, certainty) #test if it has non-witness
+        
+        if(test_count % 100000 == 0): #give some occasional output
             duration = time.time() - start
             rate = test_count / duration
-            print("Tested: %d    elapsed time: %d seconds    (%d [tests / second])" % (test_count, duration, rate))
-        test_count += 1
+            print("Tested: %d    elapsed time: %d seconds    (%d [tests / second])" 
+                  % (test_count, duration, rate))
         
-    print("Found %d after %d tests in %s seconds" % (int(test), test_count, duration))
+        test_count += 1 #track number of tests
+        
+    duration = time.time() - start
+    print("\nFound number with non-witness [%d] (%d bits)" % (int(test), nbits))
+    print("Tested %d integers using a certainty of %d in total %d seconds" 
+          %  (test_count, certainty, duration))
+    
     
 ###############################################################################
 #########################      Tests       ####################################
 ###############################################################################    
-#non_witness_test(5, 8) #should through error.. 
 #non_witness_test(17, 5) #should be prime
 #non_witness_test(15, 5) #should have non-witness
-#non_witness_test(27534692908801, 50)
-#non_witness_test(339772479099301, 50)
+#non_witness_test(27534692908801, 50) #should have non-witness
+#non_witness_test(339772479099301, 50) #should have non-witness
 
-driver(40, 5)
-
+driver(12, 5)
