@@ -16,7 +16,7 @@ Created on Wed Mar 20 12:47:31 2019
         ryan learnded github
         hello
 """
-import sys, rsa, random as rand
+import sys, rsa, random as rand, time
 
 ###############################################################################
 """
@@ -74,13 +74,21 @@ def non_witness_test(x, s):
         print("\tNon-witnesses: %d" % nw)
         return True
 
-def driver(nbits = 38):
+def driver(nbits, certainty):
     done = False
-    test = 1
+    test_count = 1 #test counter
+    start = time.time() #track duration
     
     while(not done):
-        prime = abs(rand.getrandbits(nbits))
-        done = non_witness_test(prime, 5)
+        test = abs(rand.getrandbits(nbits))
+        done = non_witness_test(test, certainty)
+        if(test_count % 100000 == 0):
+            duration = time.time() - start
+            rate = test_count / duration
+            print("Tested: %d    elapsed time: %d seconds    (%d [tests / second])" % (test_count, duration, rate))
+        test_count += 1
+        
+    print("Found %d after %d tests in %s seconds" % (int(test), test_count, duration))
     
 ###############################################################################
 #########################      Tests       ####################################
@@ -91,5 +99,5 @@ def driver(nbits = 38):
 #non_witness_test(27534692908801, 50)
 #non_witness_test(339772479099301, 50)
 
-driver()
+driver(40, 5)
 
