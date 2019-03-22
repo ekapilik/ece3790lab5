@@ -11,6 +11,9 @@ Created on Wed Mar 20 12:47:31 2019
     2019-03-20:
         wrote non_witness_test function
         added simple tests
+    2019-03-22:
+        generated primes
+        ryan learnded github
 """
 import sys, rsa, random as rand
 
